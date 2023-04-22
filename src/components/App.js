@@ -11,47 +11,55 @@ function App() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timeout = setTimeout(() => {
       setFlashWord(false);
     }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [word]);
+
+  useEffect(() => {
     setWord(WORD_LIST[index]);
-    return () => clearInterval(interval);
+    setFlashWord(true);
+    setUserInput('');
+    setResult('');
   }, [index]);
+
+  const handleInputChange = (event) => {
+    setUserInput(event.target.value);
+  };
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
     if (userInput.toLowerCase() === word.toLowerCase()) {
       setResult('You won!');
     } else {
-      setResult('You Lost!');
+      setResult('You lost!');
     }
-  }
-
-  const handleInputChange = (event) => {
-    setUserInput(event.target.value);
-  }
+  };
 
   const handleRestartClick = () => {
-    setFlashWord(true);
-    setUserInput('');
-    setResult('');
-    setIndex(0);
-  }
+    if (index === WORD_LIST.length - 1) {
+      setIndex(0);
+    } else {
+      setIndex(index + 1);
+    }
+  };
 
   return (
-    <div class="mini-game-container">
-      <h2 class="mini-game-title">Mini Game</h2>
-      {flashWord && <p class="mini-game-word">{word}</p>}
+    <div className="mini-game-container">
+      <h2 className="mini-game-title">Mini Game</h2>
+      {flashWord && <p className="mini-game-word">{word}</p>}
       {!flashWord && (
-        <form class="mini-game-form" onSubmit={handleFormSubmit}>
-          <input class="mini-game-input" type="text" value={userInput} onChange={handleInputChange} />
-          <button class="mini-game-button" type="submit">Check Answer</button>
+        <form className="mini-game-form" onSubmit={handleFormSubmit}>
+          <input className="mini-game-input" type="text" value={userInput} onChange={handleInputChange} />
+          <button className="mini-game-button" type="submit">Check Answer</button>
         </form>
       )}
       {result && (
         <>
-          <p class="mini-game-result">{result}</p>
-          <button class="mini-game-restart-button" onClick={handleRestartClick}>Restart</button>
+          <p className="mini-game-result">{result}</p>
+          <button className="mini-game-restart-button" onClick={handleRestartClick}>Restart</button>
         </>
       )}
     </div>
